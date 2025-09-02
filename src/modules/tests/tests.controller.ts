@@ -11,7 +11,7 @@ import {
     UploadedFile,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
+import { diskStorage, memoryStorage } from 'multer';
 import { extname } from 'path';
 import {
     ApiTags,
@@ -135,14 +135,7 @@ export class TestsController {
 
     @Post('upload/audio')
     @UseInterceptors(FileInterceptor('audio', {
-        storage: diskStorage({
-            destination: './uploads/audio',
-            filename: (req, file, cb) => {
-                const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-                const ext = extname(file.originalname);
-                cb(null, `audio-${uniqueSuffix}${ext}`);
-            },
-        }),
+        storage: memoryStorage(), // Railway uchun memory storage
         fileFilter: (req, file, cb) => {
             if (file.mimetype.match(/\/(mp3|wav|m4a|ogg|aac|flac)$/)) {
                 cb(null, true);
@@ -151,7 +144,7 @@ export class TestsController {
             }
         },
         limits: {
-            fileSize: 50 * 1024 * 1024, // 50MB
+            fileSize: 10 * 1024 * 1024, // 10MB (Railway uchun kichikroq)
         },
     }))
     @ApiOperation({ summary: 'Listening/Speaking uchun audio fayl yuklash' })
@@ -175,14 +168,15 @@ export class TestsController {
             throw new Error('Audio fayl yuklanmadi!');
         }
 
+        // Railway memory storage uchun
         return {
-            message: 'Audio fayl muvaffaqiyatli yuklandi',
-            filename: file.filename,
-            url: `/uploads/audio/${file.filename}`,
+            message: 'Audio fayl muvaffaqiyatli yuklandi (memory)',
+            filename: file.originalname,
             size: file.size,
             mimetype: file.mimetype,
             uploadedBy: req.user.id,
             uploadedAt: new Date().toISOString(),
+            note: 'Fayl memory da saqlanadi (Railway limitation)',
         };
     }
 }

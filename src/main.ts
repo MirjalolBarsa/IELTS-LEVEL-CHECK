@@ -1,20 +1,6 @@
 import 'dotenv/config';
 import { NestFactory } from '@nestjs/core';
-import        await app.listen(port, '0.0.0.0');
-
-        console.log(`🚀 IELTS API running on: http://localhost:${port}`);
-        console.log(`📱 API endpoints: http://localhost:${port}/api`);
-        
-        if (process.env.NODE_ENV !== 'production') {
-            console.log(`📚 Swagger docs: http://localhost:${port}/api/docs`);
-        }
-    } catch (error) {
-        console.error('❌ Error starting IELTS API:', error);
-        process.exit(1);
-    }
-}
-
-bootstrap();ationPipe } from '@nestjs/common';
+import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { existsSync, mkdirSync } from 'fs';
@@ -49,7 +35,7 @@ async function bootstrap() {
         }
 
         // Static files serving for uploaded audio
-        app.useStaticAssets('/tmp/uploads', {
+        app.useStaticAssets(uploadDir, {
             prefix: '/uploads/',
         });
 
@@ -68,11 +54,12 @@ async function bootstrap() {
             origin: process.env.CORS_ORIGINS?.split(',') || ['*'],
             credentials: true,
         });
+        
         app.setGlobalPrefix('api');
 
         const port = process.env.PORT || 3000;
 
-        // Swagger (only in development)
+        // Swagger documentation (only in development)
         if (process.env.NODE_ENV !== 'production') {
             const config = new DocumentBuilder()
                 .setTitle('IELTS Level Check API')
@@ -88,13 +75,14 @@ async function bootstrap() {
             const document = SwaggerModule.createDocument(app, config);
             SwaggerModule.setup('api/docs', app, document);
         }
-        await app.listen(port);
+
+        await app.listen(port, '0.0.0.0');
 
         console.log(`🚀 IELTS API running on: http://localhost:${port}`);
-        console.log(`� API endpoints: http://localhost:${port}/api`);
+        console.log(`📱 API endpoints: http://localhost:${port}/api`);
         
         if (process.env.NODE_ENV !== 'production') {
-            console.log(`� Swagger docs: http://localhost:${port}/api/docs`);
+            console.log(`📚 Swagger docs: http://localhost:${port}/api/docs`);
         }
 
     } catch (error) {

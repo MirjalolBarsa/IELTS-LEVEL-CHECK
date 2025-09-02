@@ -1,14 +1,26 @@
 import 'dotenv/config';
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
+import        await app.listen(port, '0.0.0.0');
+
+        console.log(`🚀 IELTS API running on: http://localhost:${port}`);
+        console.log(`📱 API endpoints: http://localhost:${port}/api`);
+        
+        if (process.env.NODE_ENV !== 'production') {
+            console.log(`📚 Swagger docs: http://localhost:${port}/api/docs`);
+        }
+    } catch (error) {
+        console.error('❌ Error starting IELTS API:', error);
+        process.exit(1);
+    }
+}
+
+bootstrap();ationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import path, { join } from 'path';
+import { existsSync, mkdirSync } from 'fs';
 import { AppModule } from './app.module';
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
-
-const dir = process.env.UPLOAD_DIR || path.join(process.cwd(), 'uploads');
 
 async function bootstrap() {
     try {
@@ -24,6 +36,17 @@ async function bootstrap() {
 
         // Global logging interceptor
         app.useGlobalInterceptors(new LoggingInterceptor());
+
+        // Create uploads directory for Railway
+        const uploadDir = '/tmp/uploads';
+        try {
+            if (!existsSync(uploadDir)) {
+                mkdirSync(uploadDir, { recursive: true });
+                console.log('✅ Created upload directory:', uploadDir);
+            }
+        } catch (err) {
+            console.log('⚠️ Could not create upload directory, using memory storage');
+        }
 
         // Static files serving for uploaded audio
         app.useStaticAssets('/tmp/uploads', {
@@ -42,7 +65,7 @@ async function bootstrap() {
 
         // CORS
         app.enableCors({
-            origin: process.env.CORS_ORIGINS?.split(',') || ['http://localhost:3000'],
+            origin: process.env.CORS_ORIGINS?.split(',') || ['*'],
             credentials: true,
         });
         app.setGlobalPrefix('api');

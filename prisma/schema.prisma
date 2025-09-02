@@ -1,0 +1,142 @@
+// IELTS Level Check Backend - Prisma Schema
+// Database: PostgreSQL
+// ORM: Prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User Model
+model User {
+  id        String   @id @default(uuid())
+  username  String   @unique
+  email     String   @unique
+  password  String
+  firstName String?
+  lastName  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  testResults  TestResult[]
+  testSessions TestSession[]
+
+  @@map("users")
+}
+
+// Test Session Model  
+model TestSession {
+  id          String     @id @default(uuid())
+  userId      String
+  testType    TestType
+  status      TestStatus @default(IN_PROGRESS)
+  startedAt   DateTime   @default(now())
+  completedAt DateTime?
+
+  // Relations
+  user    User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  results TestResult[]
+
+  @@map("test_sessions")
+}
+
+// Test Result Model
+model TestResult {
+  id             String   @id @default(uuid())
+  userId         String
+  sessionId      String
+  testType       TestType
+  score          Float
+  bandScore      Float
+  maxScore       Float
+  responses      Json // Foydalanuvchi javoblari
+  correctAnswers Json // To'g'ri javoblar
+  feedback       String?
+  aiAnalysis     Json? // AI tahlili (Writing/Speaking uchun)
+  createdAt      DateTime @default(now())
+
+  // Relations
+  user    User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  session TestSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@map("test_results")
+}
+
+// Test Questions Model
+model TestQuestion {
+  id            String     @id @default(uuid())
+  testType      TestType
+  questionText  String
+  options       Json? // Multiple choice options (Reading/Listening uchun)
+  correctAnswer String?
+  audioUrl      String? // Listening uchun
+  passageText   String? // Reading uchun
+  difficulty    Difficulty @default(INTERMEDIATE)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  @@map("test_questions")
+}
+
+// Writing Prompts Model
+model WritingPrompt {
+  id           String          @id @default(uuid())
+  taskType     WritingTaskType
+  prompt       String
+  instructions String
+  timeLimit    Int // daqiqalarda
+  wordLimit    Int
+  difficulty   Difficulty      @default(INTERMEDIATE)
+  createdAt    DateTime        @default(now())
+
+  @@map("writing_prompts")
+}
+
+// Speaking Topics Model
+model SpeakingTopic {
+  id         String       @id @default(uuid())
+  part       SpeakingPart
+  topic      String
+  questions  Json // Savollar ro'yxati
+  timeLimit  Int // daqiqalarda
+  difficulty Difficulty   @default(INTERMEDIATE)
+  createdAt  DateTime     @default(now())
+
+  @@map("speaking_topics")
+}
+
+// Enums
+enum TestType {
+  LISTENING
+  READING
+  WRITING
+  SPEAKING
+}
+
+enum TestStatus {
+  IN_PROGRESS
+  COMPLETED
+  ABANDONED
+}
+
+enum Difficulty {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum WritingTaskType {
+  TASK_1
+  TASK_2
+}
+
+enum SpeakingPart {
+  PART_1
+  PART_2
+  PART_3
+}

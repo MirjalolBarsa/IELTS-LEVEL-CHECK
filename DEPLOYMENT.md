@@ -120,6 +120,7 @@ RATE_LIMIT_LIMIT=100
 ## Database Migration
 
 Deployment'dan keyin birinchi marta:
+
 ```bash
 npx prisma migrate deploy
 npx prisma db seed
@@ -139,6 +140,7 @@ Bepul SSL uchun Cloudflare yoki deployment platformasining SSL'idan foydalaning.
 ## Backup
 
 Database'ni kunlik backup qiling:
+
 ```bash
 pg_dump $DATABASE_URL > backup_$(date +%Y%m%d).sql
 ```

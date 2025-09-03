@@ -54,6 +54,7 @@ async function bootstrap() {
             origin: process.env.CORS_ORIGINS?.split(',') || ['*'],
             credentials: true,
         });
+        
         app.setGlobalPrefix('api');
 
         const port = process.env.PORT || 3000;
@@ -62,33 +63,30 @@ async function bootstrap() {
         if (process.env.NODE_ENV !== 'production') {
             const config = new DocumentBuilder()
                 .setTitle('IELTS Level Check API')
-                .setDescription('IELTS darajasini aniqlash uchun API')
+                .setDescription('IELTS darajasini tekshirish uchun backend API')
                 .setVersion('1.0')
-                .addTag('Auth', 'Authentication endpoints')
-                .addTag('Tests', 'IELTS test endpoints')
-                .addTag('Users', 'User management endpoints')
-                .addTag('Results', 'Test results endpoints')
                 .addBearerAuth()
+                .addTag('Auth', 'Authentication')
+                .addTag('Users', 'User management')
+                .addTag('Tests', 'IELTS tests')
+                .addTag('Results', 'Test results')
                 .build();
 
             const document = SwaggerModule.createDocument(app, config);
-            SwaggerModule.setup('api/docs', app, document, {
-                customSiteTitle: 'IELTS API Documentation',
-                customfavIcon: 'https://cdn-icons-png.flaticon.com/512/3002/3002543.png',
-                customCss: '.swagger-ui .topbar { display: none }',
-            });
-
-            console.log(`📚 Swagger docs available at: http://localhost:${port}/api/docs`);
+            SwaggerModule.setup('api/docs', app, document);
         }
 
         await app.listen(port, '0.0.0.0');
-        console.log(`🚀 IELTS API is running on: http://localhost:${port}`);
-        console.log(`📱 Health check: http://localhost:${port}/api/health`);
+
+        console.log(`🚀 IELTS API running on: http://localhost:${port}`);
+        console.log(`📱 API endpoints: http://localhost:${port}/api`);
+        
         if (process.env.NODE_ENV !== 'production') {
-            console.log(`📖 API Documentation: http://localhost:${port}/api/docs`);
+            console.log(`📚 Swagger docs: http://localhost:${port}/api/docs`);
         }
+
     } catch (error) {
-        console.error('❌ Error starting IELTS API:', error);
+        console.error('❌ Failed to start IELTS application:', error);
         process.exit(1);
     }
 }

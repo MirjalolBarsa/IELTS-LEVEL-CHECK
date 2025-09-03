@@ -76,7 +76,10 @@ async function bootstrap() {
             SwaggerModule.setup('api/docs', app, document);
         }
 
-        await app.listen(port, '0.0.0.0');
+        console.log('🗄️  Database connected successfully');
+        
+        // Start the server
+        await app.listen(port);
 
         console.log(`🚀 IELTS API running on: http://localhost:${port}`);
         console.log(`📱 API endpoints: http://localhost:${port}/api`);

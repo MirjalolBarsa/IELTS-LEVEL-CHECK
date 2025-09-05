@@ -2,22 +2,7 @@
 
 ## Serverga Joylashtirish Qo'llanmasi
 
-### 1. RAILWAY (Tavsiya etiladi - Eng oson)
-
-1. **Railway hisobini oching:** https://railway.app
-2. **GitHub bilan ulanish**
-3. **New Project > Deploy from GitHub repo**
-4. **Repositoryingizni tanlang**
-5. **Environment Variables qo'shish:**
-   ```env
-   DATABASE_URL=postgresql://username:password@host:5432/database_name
-   JWT_SECRET=your-super-secret-jwt-key-at-least-32-characters
-   NODE_ENV=production
-   CORS_ORIGINS=https://your-frontend-domain.com
-   ```
-6. **Deploy!** - Avtomatik deploy qiladi
-
-### 2. VERCEL (Frontend bilan birga)
+### 1. VERCEL (Backend + Frontend)
 
 1. **Vercel CLI o'rnatish:**
    ```bash

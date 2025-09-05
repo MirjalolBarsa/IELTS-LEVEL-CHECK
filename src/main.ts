@@ -23,7 +23,7 @@ async function bootstrap() {
         // Global logging interceptor
         app.useGlobalInterceptors(new LoggingInterceptor());
 
-        // Create uploads directory for Railway
+        // Create uploads directory
         const uploadDir = '/tmp/uploads';
         try {
             if (!existsSync(uploadDir)) {

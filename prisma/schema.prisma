@@ -19,6 +19,7 @@ model User {
   password  String
   firstName String?
   lastName  String?
+  role      UserRole @default(USER)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -139,4 +140,10 @@ enum SpeakingPart {
   PART_1
   PART_2
   PART_3
+}
+
+enum UserRole {
+  USER
+  ADMIN
+  SUPER_ADMIN
 }

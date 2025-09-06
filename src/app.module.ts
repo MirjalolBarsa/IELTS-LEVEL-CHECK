@@ -8,6 +8,7 @@ import { UsersModule } from './modules/users/users.module';
 import { TestsModule } from './modules/tests/tests.module';
 import { ResultsModule } from './modules/results/results.module';
 import { OpenaiModule } from './modules/openai/openai.module';
+import { AdminModule } from './modules/admin/admin.module';
 
 @Module({
     imports: [
@@ -30,6 +31,7 @@ import { OpenaiModule } from './modules/openai/openai.module';
         TestsModule,
         ResultsModule,
         OpenaiModule,
+        AdminModule,
     ],
     controllers: [AppController],
     providers: [],
